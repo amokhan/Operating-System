@@ -1,0 +1,134 @@
+/*Ques  8.     Sudesh     Sharma     is     a     Linux     expert     who     wants     to     have     an     online     system     where     he     can   
+handle     student     queries.     Since     there     can     be     multiple     requests     at     any     time     he     wishes     to     dedicate     a   
+fixed     amount     of     time     to     every     request     so     that     everyone     gets     a     fair     share     of     his     time.     He     will     log   
+into     the     system     from     10  am     to     12  am     only.      He     wants     to     have     separate     requests     queues     for     students   
+and     faculty  .     Implement     a     strategy     for     the     same.     The     summary     at     the     end     of     the     session     should   
+include     the     total     time     he     spent     on     handling     queries     and     average     query     time.*/
+
+
+#include<stdio.h>
+struct Request
+{
+     char a[6];				//Arrival time
+     int rqh;				//request handling time in minutes
+     char ch;				//faculty or student
+};
+int toCast(char *p)//here size is 4
+{
+   int count=0;
+   int i;
+   for( i=0;i<5;i++)
+   {
+     if(p[i]<48||p[i]>57);
+      else
+       {
+         count=10*count+(int)p[i]-48;
+          }
+    }
+  return count;
+}
+void sjf(struct Request Student[],int n)				//to sort According to sortest job first and sortest arrival time.
+{
+     struct Request Rq;
+     int j;
+    for(j=0;j<n;j++)
+    {
+    	int i;
+       for(i=0;i<n-1;i++)
+       {
+       if(toCast(Student[i].a)<toCast(Student[i+1].a));
+       else if(toCast(Student[i].a)==toCast(Student[i+1].a))
+       {
+        if(Student[i].rqh>Student[i+1].rqh)
+          {
+             Rq=Student[i];
+             Student[i]=Student[i+1];
+             Student[i+1]=Rq;
+            }
+          }
+       else
+        {
+            Rq=Student[i];
+             Student[i]=Student[i+1];
+             Student[i+1]=Rq;
+         }
+     }
+     }
+}
+void printIt(struct Request Student[],int n)
+{
+    int count=0;
+    int i;
+   printf("\n\t\t*************************************************************************\n\n\t\tRq Name\t\t\t\t    Arrival Time\tRequest handling time\n\n");
+   printf("\n\t\t*************************************************************************");
+   for(i=0;i<n;i++)
+   {
+       if(Student[i].ch=='S')
+      printf("\n\t\t\tStudent%d\t\t\t%s\t\t\t%d\n",i-count,Student[i].a,Student[i].rqh);
+       else
+       {
+      printf("\n\t\t\tFaculty%d\t\t\t%s\t\t\t%d\n",count,Student[i].a,Student[i].rqh);
+           count++;
+        }
+     }
+}
+int main()
+{
+          int i=1000;
+          int ver=0;
+     struct Request StuFac[15]={{"10:10",5,'S'},{"11:10",15,'S'},{"10:50",10,'S'},{"10:20",3,'S'},{"10:10",2,'S'},{"11:10",8,'S'},{"11:10",12,'S'},{"11:30",6,'S'},{"11:40",11,'S'},{"11:02",5,'S'},{"10:10",8,'F'},{"10:55",6,'F'},{"11:02",8,'F'},{"10:28",2,'F'},{"10:39",7,'F'}};
+   printIt(StuFac,15);
+     sjf(StuFac,15);
+     printf("\t\t*************************************************************************\n\t\t\tAfter arranging according to shortest job first and Arrival time we get\n\n");
+     printIt(StuFac,15);
+    while(i<1200)
+    {
+       ver=0;
+       int j=0;
+       while(j<15)
+         {
+             int count=0;
+             if(i<toCast(StuFac[j].a)||StuFac[j].rqh==0);
+             else
+             {
+                 ver=1;
+                 if(StuFac[j].rqh<2)
+                 {
+                    StuFac[j].rqh=0;
+                   if(StuFac[j].ch=='F'){
+				   
+                  
+				  printf("\n\t\t\tFaculty%d request is handeled at %d:%d to %d:%d and 0 minutes time more required\n\n",count++,i/100,i%100,(i+1)/100,(i+1)%100);
+                  printf("\t\t--------------------------------------------------------------------------------------------");
+            }
+				else{
+				
+                    
+                  printf("\t\t\tStudent%d request is handeled at %d:%d to %d:%d and 0 minutes time more required\n\n",j-count,i/100,i%100,(i+1)/100,(i+1)%100);
+                    printf("\t\t--------------------------------------------------------------------------------------------\n");
+                    i=i+1;}
+                  }
+                else
+                 {
+                      StuFac[j].rqh-=2;
+                       if(StuFac[j].ch=='F')
+                       {
+					   
+                       printf("\t\t--------------------------------------------------------------------------------------------\n");
+                  printf("\t\tFaculty%d request is handeled at %d:%d to %d:%d and %d minutes time more required\n\n",count++,i/100,i%100,(i+2)/100,(i+2)%100,StuFac[j].rqh);
+                    printf("--------------------------------------------------------------------------------------------\n");
+					}else
+					{
+			
+                  printf("\t\tStudent%d request is handeled at %d:%d to %d:%d and %d minutes time more required\n\n",j-count,i/100,i%100,(i+2)/100,(i+2)%100,StuFac[j].rqh);
+                   printf("\t\t--------------------------------------------------------------------------------------------\n");
+				    i=i+2;
+                }
+                   }
+              }
+            j++;
+          }
+        if(ver==0)
+        i++;
+    }
+}
